@@ -1,0 +1,85 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build-and-release:
+    name: Build and Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: "1.21"
+
+      - name: Build AMD64 Binary
+        run: GOOS=linux GOARCH=amd64 go build -o ollama-terminal-linux-amd64 .
+
+      - name: Build ARMv6 Binary
+        run: GOOS=linux GOARCH=arm GOARM=6 go build -o ollama-terminal-linux-armv6 .
+
+      - name: Build ARMv7 Binary
+        run: GOOS=linux GOARCH=arm GOARM=7 go build -o ollama-terminal-linux-armv7 .
+
+      - name: Build ARM64 Binary
+        run: GOOS=linux GOARCH=arm64 go build -o ollama-terminal-linux-arm64 .
+
+      - name: Create Release
+        id: create_release
+        uses: ncipollo/release-action@v1.13.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag: ${{ github.ref }}
+          name: Release ${{ github.ref_name }}
+          draft: false
+          prerelease: false
+          generateReleaseNotes: true
+
+      - name: Upload AMD64 Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./ollama-terminal-linux-amd64
+          asset_name: ollama-terminal-linux-amd64
+          asset_content_type: application/octet-stream
+
+      - name: Upload ARMv6 Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./ollama-terminal-linux-armv6
+          asset_name: ollama-terminal-linux-armv6
+          asset_content_type: application/octet-stream
+
+      - name: Upload ARMv7 Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./ollama-terminal-linux-armv7
+          asset_name: ollama-terminal-linux-armv7
+          asset_content_type: application/octet-stream
+
+      - name: Upload ARM64 Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./ollama-terminal-linux-arm64
+          asset_name: ollama-terminal-linux-arm64
+          asset_content_type: application/octet-stream
