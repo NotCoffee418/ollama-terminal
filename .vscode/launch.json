@@ -27,6 +27,17 @@
             "mode": "auto",
             "program": "${workspaceFolder}",
             "args": ["set", "alias", "ai"]
+        },
+        {
+            "name": "run",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}",
+            "args": ["run"],
+            "env": {
+                "OLLAMA_TERMINAL_MODEL": "llama2:13b"
+            }
         }
     ]
 }

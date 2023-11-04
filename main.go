@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"strings"
 )
 
 func main() {
@@ -62,12 +63,29 @@ func run(params []string) {
 	}
 	installCheck()
 
+	// Parse any prompt
+	model := os.Getenv("OLLAMA_TERMINAL_MODEL")
+	if model == "" {
+		panic("OLLAMA_TERMINAL_MODEL is not set. Please run `ollama-terminal install`")
+	}
+	if strings.HasSuffix(model, ":text") {
+		// Dont use text models
+		model = model[:len(model)-5]
+		fmt.Println("Warning: Text models are not supported. Using the non-text version of the model.")
+	}
+	initialPrompt := strings.Join(params, " ")
+
+	// Run ollama with the API
+	StartOllama(model, initialPrompt)
 }
 
 func set(key string, value string) {
 	s := LoadSettings()
 	switch key {
 	case "alias":
+		if value == "ollama" || value == "ollama-terminal" {
+			panic("Cannot set alias to ollama or ollama-terminal. It will break stuff.")
+		}
 		s.alias = value
 	case "model":
 		s.model = value
