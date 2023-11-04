@@ -11,6 +11,7 @@ You can specify an alias for the application, and the model to use for the promp
 ## Install and update
 ```bash
 curl -s https://raw.githubusercontent.com/NotCoffee418/ollama-terminal/main/install.sh | sudo bash
+source ~/.bashrc
 ```
 
 ## Usage
