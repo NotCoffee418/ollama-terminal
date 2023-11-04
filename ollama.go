@@ -1,26 +1,37 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
-	"io"
 	"os"
 	"os/exec"
+	"strings"
 )
 
 func StartOllama(modelName string, initialPrompt string) {
 	ollamaUpCheck()
 	ollamaModelPrep(modelName)
-}
 
-func ollamaUpCheck() {
-	resp, err := httpClient.Get("http://localhost:11434")
-	if err != nil {
-		panic("Ollama service is not running. Please ensure ollama it is installed and it's service running")
-	}
+	fmt.Println("Type /bye to exit")
 
-	rawResp, err := io.ReadAll(resp.Body)
-	if resp.StatusCode != 200 || err != nil || string(rawResp) != "Ollama is running" {
-		panic("Ollama service is not running. Please ensure ollama it is installed and it's service running")
+	initialPromptHandled := initialPrompt == ""
+	for {
+		// Handle initial prompt or prompt input
+		var promptStr string
+		if !initialPromptHandled {
+			promptStr = initialPrompt
+			initialPromptHandled = true
+		} else {
+			promptStr = getInputPrompt()
+		}
+
+		// Handle special commands
+		if promptStr == "/bye" {
+			return
+		}
+
+		// Prompt the model
+		streamedPrompt(modelName, promptStr)
 	}
 }
 
@@ -34,4 +45,15 @@ func ollamaModelPrep(modelName string) {
 	if err := cmd.Run(); err != nil {
 		panic(fmt.Sprintf("Error executing command: %s\n", err))
 	}
+}
+
+func getInputPrompt() string {
+	reader := bufio.NewReader(os.Stdin)
+	fmt.Print("\nPrompt: ")
+	text, err := reader.ReadString('\n')
+	if err != nil {
+		fmt.Fprintln(os.Stderr, "Error reading from input:", err)
+	}
+	text = strings.TrimSpace(text)
+	return text
 }

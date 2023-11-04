@@ -8,12 +8,9 @@ import (
 	"io"
 	"log"
 	"net/http"
-	"time"
 )
 
-var httpClient = &http.Client{
-	Timeout: time.Second * 2,
-}
+var httpClient = &http.Client{}
 
 type ErrorType struct {
 	Error string `json:"error"`
