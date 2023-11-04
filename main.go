@@ -46,7 +46,7 @@ Commands:
 func install() {
 	s := LoadSettings()
 	if !s.isUndefined {
-		fmt.Println("ollama-terminal is already installed.")
+		fmt.Println("ollama-terminal environment was already set up.")
 		return
 	}
 	s.isUndefined = false
