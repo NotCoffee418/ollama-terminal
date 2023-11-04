@@ -16,7 +16,7 @@ source ~/.bashrc
 
 ## Usage
 ```bash
-llama [optional initial prompt}
+llama [optional initial prompt]
 ```
 See Configuration section for changing `llama` to a different alias.
 
@@ -24,11 +24,13 @@ See Configuration section for changing `llama` to a different alias.
 The alias is the command you run to activate the application. By default the alias is `llama`.
 To change the alias run the following command:
 ```bash
-/local/usr/bin/ollama-terminal set alias [new alias]
+/usr/local/bin/ollama-terminal set alias [new alias]
+source ~/.bashrc
 ```
 
 To set the model ollama-terminal uses to generate the prompt run the following command:
 ```bash
-/local/usr/bin/ollama-terminal set model [model name]
+/usr/local/bin/ollama-terminal set model [model name]
+source ~/.bashrc
 ```
 You can find a list of usable models on the [ollama website](https://ollama.ai/library).
